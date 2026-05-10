@@ -24,3 +24,10 @@ class LoginPage(BasePage):
         self.enter_username(username)
         self.enter_password(password)
         self.tap_login()
+
+    def is_error_message_visible(self, text: str, timeout: int = 5) -> bool:
+        locator = (
+            AppiumBy.XPATH,
+            f'//android.widget.TextView[contains(@resource-id, "ErrorTV") and @text="{text}"]',
+        )
+        return self.is_element_visible(locator, timeout)

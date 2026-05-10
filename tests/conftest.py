@@ -3,6 +3,7 @@ import sys
 import pytest
 import yaml
 from pathlib import Path
+from dotenv import load_dotenv
 from appium import webdriver
 from appium.options.common import AppiumOptions
 # Ensure project root is on sys.path
@@ -14,6 +15,7 @@ CONFIG_PATH = PROJECT_ROOT / "config" / "capabilities.yaml"
 APPIUM_PORT = 4723
 APPIUM_HOST = '127.0.0.1'
 
+load_dotenv(PROJECT_ROOT / "credentials.env")
 
 # Normalize the app path to handle spaces and relative paths, especially on Windows
 def _normalize_app_path(app_path: str) -> str:
