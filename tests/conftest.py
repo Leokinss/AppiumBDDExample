@@ -10,10 +10,12 @@ from appium.options.common import AppiumOptions
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
 sys.path.append(str(PROJECT_ROOT))
 from pages.mobile.pages import Pages
+from pages.web.pages import WebPages
 
 CONFIG_PATH = PROJECT_ROOT / "config" / "capabilities.yaml"
 APPIUM_PORT = 4723
 APPIUM_HOST = '127.0.0.1'
+WEB_BASE_URL = os.environ.get("WEB_BASE_URL", "https://www.saucedemo.com/")
 
 load_dotenv(PROJECT_ROOT / "credentials.env")
 
@@ -63,8 +65,13 @@ def pages(appium_driver):
     platform = appium_driver.capabilities.get("platformName")
     return Pages(appium_driver, platform)
 
+@pytest.fixture
+def web_pages(page):
+    page.goto(WEB_BASE_URL)
+    return WebPages(page)
+
 @pytest.fixture(autouse=True)
-def setup_teardown(appium_driver):
+def setup_teardown():
     # Setup code before each test
     print("\nSetting up the test environment")
     yield

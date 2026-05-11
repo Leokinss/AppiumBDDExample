@@ -2,7 +2,7 @@ import os
 from tests.utils import env
 from pytest_bdd import scenarios, given, when, then, parsers
 from tests.mobile.steps.common_steps import *
-scenarios("../features/login.feature")
+scenarios("../../features/login.feature")
 
 #temp credentials for testing
 USERNAME = env.required_env("VALID_USER")
