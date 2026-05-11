@@ -1,7 +1,5 @@
 pytest==9.0.2
 pytest-bdd==8.1.0
 appium-python-client==5.2.7
-playwright==1.59.0
-pytest-playwright==0.7.2
 PyYAML==6.0.3
 python-dotenv==1.2.2
