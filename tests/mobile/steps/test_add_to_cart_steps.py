@@ -1,7 +1,7 @@
 import os
 from pytest_bdd import scenarios, given, when, then, parsers
 from tests.mobile.steps.common_steps import *
-scenarios("../features/add_to_cart.feature")
+scenarios("../../features/add_to_cart.feature")
 
 
 @when(parsers.parse("I add {product_name} into the cart"))
