@@ -60,7 +60,8 @@ def appium_driver():
 
 @pytest.fixture
 def pages(appium_driver):
-    return Pages(appium_driver)
+    platform = appium_driver.capabilities.get("platformName")
+    return Pages(appium_driver, platform)
 
 @pytest.fixture(autouse=True)
 def setup_teardown(appium_driver):

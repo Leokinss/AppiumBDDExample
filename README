@@ -8,4 +8,9 @@ py -3.14 -m venv venv
 pip install -r requirements.txt
 pytest -s -v
 
-Need Appium server and Android emulator for now
+Need Appium server and Android emulator for now.
+
+Select the target platform with the TEST_DEVICE env var (defaults to ANDROID).
+Capabilities are defined in config/capabilities.yaml; page objects per platform live
+under pages/mobile/<platform>/. To add iOS, implement pages/mobile/ios/*.py and
+register the classes in pages/mobile/pages.py under PAGE_CLASSES["iOS"].
