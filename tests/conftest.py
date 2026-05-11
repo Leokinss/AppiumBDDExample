@@ -16,8 +16,43 @@ CONFIG_PATH = PROJECT_ROOT / "config" / "capabilities.yaml"
 APPIUM_PORT = 4723
 APPIUM_HOST = '127.0.0.1'
 WEB_BASE_URL = os.environ.get("WEB_BASE_URL", "https://www.saucedemo.com/")
+PLATFORMS = ["ANDROID", "IOS", "WEB"]
+MOBILE_PLATFORMS = {"ANDROID", "IOS"}
 
 load_dotenv(PROJECT_ROOT / "credentials.env")
+
+def pytest_addoption(parser):
+    parser.addoption(
+        "--platform",
+        action="store",
+        default="ANDROID",
+        help=f"Platform to test on. Supported: {', '.join(PLATFORMS)}. Default: ANDROID",
+    )
+
+
+def pytest_configure(config):
+    platform = config.getoption("--platform").upper()
+    if platform not in PLATFORMS:
+        raise pytest.UsageError(
+            f"--platform={platform} is not supported. Choose one of: {', '.join(PLATFORMS)}."
+        )
+
+
+def pytest_collection_modifyitems(config, items):
+    # Drop tests that don't belong to the active platform so their fixtures
+    # (appium_driver, pytest-playwright's page, etc.) are never instantiated.
+    platform = config.getoption("--platform").upper()
+    skip_segment = os.sep + ("web" if platform in MOBILE_PLATFORMS else "mobile") + os.sep
+    deselected, remaining = [], []
+    for item in items:
+        if skip_segment in str(item.fspath):
+            deselected.append(item)
+        else:
+            remaining.append(item)
+    if deselected:
+        config.hook.pytest_deselected(items=deselected)
+        items[:] = remaining
+
 
 # Normalize the app path to handle spaces and relative paths, especially on Windows
 def _normalize_app_path(app_path: str) -> str:
@@ -45,12 +80,11 @@ def load_capabilities(device: str = "ANDROID"):
         caps["app"] = _normalize_app_path(caps["app"])
 
     return caps
-    
-import pytest
+
 
 @pytest.fixture
-def appium_driver():
-    device = os.environ.get("TEST_DEVICE", "ANDROID")
+def appium_driver(request):
+    device = request.config.getoption("--platform")
     caps = load_capabilities(device)
 
     options = AppiumOptions()
