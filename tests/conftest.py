@@ -10,14 +10,11 @@ from appium.options.common import AppiumOptions
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
 sys.path.append(str(PROJECT_ROOT))
 from pages.mobile.pages import Pages
-from pages.web.pages import WebPages
 
 CONFIG_PATH = PROJECT_ROOT / "config" / "capabilities.yaml"
 APPIUM_PORT = 4723
 APPIUM_HOST = '127.0.0.1'
-WEB_BASE_URL = os.environ.get("WEB_BASE_URL", "https://www.saucedemo.com/")
-PLATFORMS = ["ANDROID", "IOS", "WEB"]
-MOBILE_PLATFORMS = {"ANDROID", "IOS"}
+PLATFORMS = ["ANDROID", "IOS"]
 
 load_dotenv(PROJECT_ROOT / "credentials.env")
 
@@ -36,22 +33,6 @@ def pytest_configure(config):
         raise pytest.UsageError(
             f"--platform={platform} is not supported. Choose one of: {', '.join(PLATFORMS)}."
         )
-
-
-def pytest_collection_modifyitems(config, items):
-    # Drop tests that don't belong to the active platform so their fixtures
-    # (appium_driver, pytest-playwright's page, etc.) are never instantiated.
-    platform = config.getoption("--platform").upper()
-    skip_segment = os.sep + ("web" if platform in MOBILE_PLATFORMS else "mobile") + os.sep
-    deselected, remaining = [], []
-    for item in items:
-        if skip_segment in str(item.fspath):
-            deselected.append(item)
-        else:
-            remaining.append(item)
-    if deselected:
-        config.hook.pytest_deselected(items=deselected)
-        items[:] = remaining
 
 
 # Normalize the app path to handle spaces and relative paths, especially on Windows
@@ -98,11 +79,6 @@ def appium_driver(request):
 def pages(appium_driver):
     platform = appium_driver.capabilities.get("platformName")
     return Pages(appium_driver, platform)
-
-@pytest.fixture
-def web_pages(page):
-    page.goto(WEB_BASE_URL)
-    return WebPages(page)
 
 @pytest.fixture(autouse=True)
 def setup_teardown():

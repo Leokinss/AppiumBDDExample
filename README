@@ -6,23 +6,14 @@ Steps to run:
 py -3.14 -m venv venv
 .\venv\Scripts\Activate.ps1
 pip install -r requirements.txt
-playwright install                      # one-time browser download for web tests
-pytest -s -v --platform android         # mobile (Android)
-pytest -s -v --platform ios             # mobile (iOS)
-pytest -s -v --platform web             # web (Playwright)
+pytest -s -v --platform android         # Android
+pytest -s -v --platform ios             # iOS
 
-The --platform flag (default: android) decides which suite runs. Tests under
-tests/mobile/ are deselected when --platform=web, and tests/web/ are
-deselected when --platform=android|ios — so a single pytest invocation
-always runs exactly one target.
+The --platform flag (default: android) selects which mobile target the
+Appium driver session runs against. Capabilities live in
+config/capabilities.yaml; page objects per platform live under
+pages/mobile/<platform>/. To add iOS, implement pages/mobile/ios/*.py and
+register the classes in pages/mobile/pages.py under PAGE_CLASSES["iOS"].
 
-Mobile (Appium):
-  Need Appium server and a device emulator.
-  Capabilities live in config/capabilities.yaml; page objects per platform live
-  under pages/mobile/<platform>/. To add iOS, implement pages/mobile/ios/*.py
-  and register the classes in pages/mobile/pages.py under PAGE_CLASSES["iOS"].
-
-Web (Playwright):
-  Page objects live under pages/web/. The web_pages fixture loads WEB_BASE_URL
-  (defaults to https://www.saucedemo.com/) before each test.
-  Web and mobile share the same .feature files under tests/features/.
+Need Appium server and a device emulator.
+Feature files live under tests/features/.
