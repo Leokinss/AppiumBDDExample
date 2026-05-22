@@ -14,7 +14,7 @@ pip install -r requirements.txt
  
 ```bash
 pytest -s -v --platform android   # Android
-pytest -s -v --platform ios       # iOS
+pytest -s -v --platform ios       # iOS (TODO, not yet implemented)
 ```
  
 The `--platform` flag (default: `android`) selects the mobile target for the Appium driver session.
