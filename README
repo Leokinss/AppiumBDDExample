@@ -1,19 +1,38 @@
-Work in progress
-
-Automation framework using Page Object Model (POM) and Gherkin syntax with Pytest-BDD
-
-Steps to run:
+# Mobile Automation Framework
+ 
+> Page Object Model (POM) with Gherkin syntax via Pytest-BDD.
+ 
+## Setup
+ 
+```bash
 py -3.14 -m venv venv
 .\venv\Scripts\Activate.ps1
 pip install -r requirements.txt
-pytest -s -v --platform android         # Android
-pytest -s -v --platform ios             # iOS
-
-The --platform flag (default: android) selects which mobile target the
-Appium driver session runs against. Capabilities live in
-config/capabilities.yaml; page objects per platform live under
-pages/mobile/<platform>/. To add iOS, implement pages/mobile/ios/*.py and
-register the classes in pages/mobile/pages.py under PAGE_CLASSES["iOS"].
-
-Need Appium server and a device emulator.
-Feature files live under tests/features/.
+```
+ 
+## Running tests
+ 
+```bash
+pytest -s -v --platform android   # Android
+pytest -s -v --platform ios       # iOS
+```
+ 
+The `--platform` flag (default: `android`) selects the mobile target for the Appium driver session.
+ 
+## Project structure
+ 
+| Path | Description |
+|------|-------------|
+| `config/capabilities.yaml` | Appium driver capabilities per platform |
+| `pages/mobile/<platform>/` | Page objects per platform |
+| `pages/mobile/pages.py` | Platform class registry (`PAGE_CLASSES`) |
+| `tests/features/` | Gherkin feature files |
+ 
+## Adding iOS support (TODO)
+ 
+1. Implement page objects under `pages/mobile/ios/*.py`
+2. Register the classes in `pages/mobile/pages.py` under `PAGE_CLASSES["iOS"]`
+## Prerequisites
+ 
+- Appium server running locally
+- Android emulator or iOS simulator
